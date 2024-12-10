@@ -3,9 +3,9 @@ import Nav from '../src/components/Navbar';
 
 const App: React.FC = () => {
   return (
-      <>
-        <Nav />
-      </>
+    <div className="bg-fixed bg-cover bg-center min-h-screen" style={{ backgroundImage: "url('../images/backdrop.jpg')" }}>
+      <Nav />
+    </div>
   );
 };
 

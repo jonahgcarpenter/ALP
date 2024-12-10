@@ -3,7 +3,7 @@ import Nav from '../components/Navbar';
 
 const HomePage: React.FC = () => {
   return (
-    <main className="page">
+    <main>
       <Nav />
     </main>
   );
