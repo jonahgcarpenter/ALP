@@ -1,11 +1,17 @@
-import React from "react";
-import Nav from '../src/components/Navbar';
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from './pages/Home';
 
 const App: React.FC = () => {
   return (
-    <div className="bg-fixed bg-cover bg-center min-h-screen" style={{ backgroundImage: "url('../images/backdrop.jpg')" }}>
-      <Nav />
-    </div>
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          {/* Add more routes here as needed */}
+        </Routes>
+      </Suspense>
+    </Router>
   );
 };
 
