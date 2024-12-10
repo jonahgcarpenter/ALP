@@ -1,3 +1,5 @@
+// The navbar where we will give the user options to join the waitlist, send me an email directly within the site using a form, and a login button that will be used to log in to the site.
+
 import React from "react";
 
 const Navbar: React.FC = () => {
