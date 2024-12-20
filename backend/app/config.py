@@ -11,27 +11,28 @@ class Config:
     # Flask config
     SECRET_KEY = os.getenv('SECRET_KEY')
     DEBUG = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    PORT = int(os.getenv('PORT', '446'))
+    PORT = int(os.getenv('PORT', os.getenv('DEFAULT_PORT')))
+    HOST = os.getenv('DEFAULT_HOST')
     
     # Session config
-    SESSION_LIFETIME = int(os.getenv('SESSION_LIFETIME', '3600'))
+    SESSION_LIFETIME = int(os.getenv('SESSION_LIFETIME'))
     
     @staticmethod
     def get_db_config():
         return {
-            'host': os.getenv('MYSQL_HOST'),
-            'port': int(os.getenv('MYSQL_PORT', '3306')),
-            'user': os.getenv('MYSQL_USER'),
+            'host': os.getenv('MYSQL_HOST', os.getenv('DEFAULT_MYSQL_HOST')),
+            'port': int(os.getenv('MYSQL_PORT', os.getenv('DEFAULT_MYSQL_PORT'))),
+            'user': os.getenv('MYSQL_USER', os.getenv('DEFAULT_MYSQL_USER')),
             'password': os.getenv('MYSQL_PASSWORD'),
-            'database': os.getenv('MYSQL_DATABASE')
+            'database': os.getenv('MYSQL_DATABASE', os.getenv('DEFAULT_MYSQL_DATABASE'))
         }
     
     @staticmethod
     def get_redis_config():
         return {
-            'host': os.getenv('REDIS_HOST'),
-            'port': int(os.getenv('REDIS_PORT', '6379')),
-            'db': int(os.getenv('REDIS_DB', '0')),
+            'host': os.getenv('REDIS_HOST', os.getenv('DEFAULT_REDIS_HOST')),
+            'port': int(os.getenv('REDIS_PORT', os.getenv('DEFAULT_REDIS_PORT'))),
+            'db': int(os.getenv('REDIS_DB', os.getenv('DEFAULT_REDIS_DB'))),
             'password': os.getenv('REDIS_PASSWORD'),
             'decode_responses': True
         }
