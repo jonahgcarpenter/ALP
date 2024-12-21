@@ -1,23 +1,24 @@
-version: "3.9"
-
 services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
     volumes:
       - ./frontend:/app
-    container_name: jonahgcarpenter/aprilslilpugs-www
-    command: npm run build
-
-  backend:
-    build:
-      context: ./backend
-    volumes:
-      - ./backend:/app
-    ports:
-      - "8000:8000"
-    container_name: jonahgcarpenter/aprilslilpugs-api
+      - /app/node_modules
     depends_on:
-      - frontend
-
-# docker-compose build
+      - backend

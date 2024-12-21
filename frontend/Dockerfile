@@ -1,17 +1,8 @@
-# frontend/Dockerfile
-
-FROM node:18 AS build
+FROM node:18-alpine
 
 WORKDIR /app
-
-# Copy package.json and install dependencies
 COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the application
 COPY . .
 
-# Build the static files
-RUN npm run build
-
-# Output: ./dist directory
+CMD ["npm", "run", "dev"]
