@@ -6,13 +6,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:8000', // Backend development server
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        rewrite: (path) => path.replace(/^\/api/, '/api'), // Adjust as needed
       },
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: 'dist', // Ensure build output is in the 'dist' directory
   },
-})
+});

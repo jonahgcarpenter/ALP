@@ -4,15 +4,15 @@ FROM python:3.9-slim
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-# Copy application code
+# Copy backend application code
 COPY . .
 
-# Expose backend port
-EXPOSE 8000
+# Copy frontend build from the frontend container
+COPY --from=frontend /app/dist /app/frontend_dist
 
-# Use dynamic CMD (set by docker-compose)
-CMD ["flask", "run", "--host=0.0.0.0", "--port=8000"]
+# Start the Gunicorn server
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]

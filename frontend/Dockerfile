@@ -1,17 +1,17 @@
-# Base image
-FROM node:18
+# frontend/Dockerfile
+
+FROM node:18 AS build
 
 WORKDIR /app
 
-# Install dependencies
-COPY package.json package-lock.json ./
+# Copy package.json and install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Copy application code
+# Copy the rest of the application
 COPY . .
 
-# Expose Vite dev server port
-EXPOSE 3000
+# Build the static files
+RUN npm run build
 
-# Default command is overridden in docker-compose
-CMD ["npm", "run", "dev"]
+# Output: ./dist directory
