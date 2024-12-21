@@ -1,38 +1,49 @@
-from datetime import timedelta
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from instance/.env
-env_path = os.path.join('/app', 'instance', '.env')
-if os.path.exists(env_path):
-    load_dotenv(env_path)
+# Load environment variables
+load_dotenv()
 
 class Config:
-    # Flask config
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    DEBUG = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    PORT = int(os.getenv('PORT', os.getenv('DEFAULT_PORT')))
-    HOST = os.getenv('DEFAULT_HOST')
-    
-    # Session config
-    SESSION_LIFETIME = int(os.getenv('SESSION_LIFETIME'))
-    
-    @staticmethod
-    def get_db_config():
-        return {
-            'host': os.getenv('MYSQL_HOST', os.getenv('DEFAULT_MYSQL_HOST')),
-            'port': int(os.getenv('MYSQL_PORT', os.getenv('DEFAULT_MYSQL_PORT'))),
-            'user': os.getenv('MYSQL_USER', os.getenv('DEFAULT_MYSQL_USER')),
-            'password': os.getenv('MYSQL_PASSWORD'),
-            'database': os.getenv('MYSQL_DATABASE', os.getenv('DEFAULT_MYSQL_DATABASE'))
-        }
-    
-    @staticmethod
-    def get_redis_config():
-        return {
-            'host': os.getenv('REDIS_HOST', os.getenv('DEFAULT_REDIS_HOST')),
-            'port': int(os.getenv('REDIS_PORT', os.getenv('DEFAULT_REDIS_PORT'))),
-            'db': int(os.getenv('REDIS_DB', os.getenv('DEFAULT_REDIS_DB'))),
-            'password': os.getenv('REDIS_PASSWORD'),
-            'decode_responses': True
-        }
+    """Base configuration."""
+    # Redis configuration
+    REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+    REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+    REDIS_DB = int(os.getenv("REDIS_DB", 0))
+    REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+
+    # MySQL configuration
+    MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
+    MYSQL_PORT = int(os.getenv("MYSQL_PORT", 3306))
+    MYSQL_USER = os.getenv("MYSQL_USER", "root")
+    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
+    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "app_db")
+
+    # Flask secret key
+    SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
+
+    # Flask configurations
+    DEBUG = False
+    TESTING = False
+
+
+class DevelopmentConfig(Config):
+    """Development configuration."""
+    DEBUG = True
+    FLASK_ENV = "development"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False  # Example for SQLAlchemy (optional)
+
+
+class ProductionConfig(Config):
+    """Production configuration."""
+    DEBUG = False
+    FLASK_ENV = "production"
+    # Example: Add production-specific configurations, such as logging
+
+
+# Helper to load the correct config class
+def get_config():
+    env = os.getenv("FLASK_ENV", "development")
+    if env == "production":
+        return ProductionConfig
+    return DevelopmentConfig

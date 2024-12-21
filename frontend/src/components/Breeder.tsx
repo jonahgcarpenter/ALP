@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
-import api from '../utils/api';
+import api from '../utils/axios';
 
 interface BreederInfo {
     firstName: string;

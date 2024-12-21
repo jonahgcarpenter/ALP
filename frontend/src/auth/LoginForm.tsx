@@ -30,7 +30,9 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
     <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg p-4 z-50">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="text-red-500 text-sm">{error}</div>
+          <div role="alert" className="text-red-500 text-sm">
+            {error}
+          </div>
         )}
         <div>
           <input

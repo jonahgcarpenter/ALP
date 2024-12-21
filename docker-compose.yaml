@@ -1,0 +1,21 @@
+services:
+  backend:
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=True
+      - SECRET_KEY=supersecretkey
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app  # Mount backend source code for hot reloading
+      - ./frontend/dist:/app/frontend/dist  # Mount built frontend files
+    command: flask run --host=0.0.0.0 --port=8000
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"  # Expose Vite dev server for hot reloading
+    volumes:
+      - ./frontend:/app  # Mount frontend source code for hot reloading
+    command: npm run dev

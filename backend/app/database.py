@@ -1,30 +1,29 @@
 import mysql.connector
-from mysql.connector import pooling
-from flask import current_app
-from .config import Config
-import logging
+from flask import current_app, g
 
-logger = logging.getLogger(__name__)
-pool = None
+db = None
 
-def init_db(app):
-    global pool
-    try:
-        pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name="mypool",
-            pool_size=5,
-            **Config.get_db_config()
-        )
-        logger.info("Database pool initialized successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize database pool: {e}")
-        raise
+def init_mysql(app):
+    """Initialize the MySQL database connection."""
+    def connect_db():
+        try:
+            return mysql.connector.connect(
+                host=app.config['MYSQL_HOST'],
+                port=app.config['MYSQL_PORT'],
+                user=app.config['MYSQL_USER'],
+                password=app.config['MYSQL_PASSWORD'],
+                database=app.config['MYSQL_DATABASE']
+            )
+        except mysql.connector.Error as err:
+            current_app.logger.error(f"MySQL connection failed: {err}")
+            return None
 
-def get_db_connection():
-    try:
-        if pool is None:
-            raise RuntimeError("Database pool not initialized")
-        return pool.get_connection()
-    except Exception as e:
-        logger.error(f"Failed to get database connection: {e}")
-        raise
+    @app.before_request
+    def before_request():
+        global db
+        db = connect_db()
+
+    @app.teardown_request
+    def teardown_request(exception):
+        if db:
+            db.close()

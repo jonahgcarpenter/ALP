@@ -1,9 +1,11 @@
 from flask import Blueprint
-from .main import main_bp
-from .auth import auth_bp
-from .breeder import breeder_bp
-from .aboutus import aboutus_bp
+from .aboutus import bp as aboutus_bp
+from .auth import bp as auth_bp
+from .breeder import bp as breeder_bp
 
-bp = Blueprint('main', __name__)
+bp = Blueprint('api', __name__, url_prefix='/api')
 
-__all__ = ['main_bp', 'auth_bp', 'breeder_bp', "aboutus_bp"]
+# Register individual blueprints for each module
+bp.register_blueprint(aboutus_bp, url_prefix='/aboutus')
+bp.register_blueprint(auth_bp, url_prefix='/auth')
+bp.register_blueprint(breeder_bp, url_prefix='/breeder')

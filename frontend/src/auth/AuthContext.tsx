@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from '../utils/api';
+import api from '../utils/axios';
 
 interface UserData {
   id: number;
@@ -46,11 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string) => {
     setError(null);
     try {
-      const response = await api.post('/auth/login', { 
-        email, 
-        password 
-      });
-      
+      const response = await api.post('/auth/login', { email, password });
       if (response.status === 200) {
         setIsLoggedIn(true);
         setUserData(response.data.user);
@@ -77,10 +73,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   useEffect(() => {
-    checkSession();
-    // Check session every minute
-    const intervalId = setInterval(checkSession, 60 * 1000);
-    return () => clearInterval(intervalId);
+    let isMounted = true; // Track whether the component is mounted
+    const fetchSession = async () => {
+      if (isMounted) {
+        await checkSession();
+      }
+    };
+
+    fetchSession();
+
+    const intervalId = setInterval(() => {
+      if (isMounted) {
+        fetchSession();
+      }
+    }, 60 * 1000);
+
+    return () => {
+      isMounted = false; // Mark component as unmounted
+      clearInterval(intervalId); // Clear interval
+    };
   }, []);
 
   // Don't render children until initial session check is complete
@@ -89,14 +100,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   return (
-    <AuthContext.Provider value={{
-      isLoggedIn,
-      userData,
-      loading,
-      error,
-      login,
-      logout
-    }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        userData,
+        loading,
+        error,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

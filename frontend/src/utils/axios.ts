@@ -1,11 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
-  withCredentials: true,
+  baseURL: '/api', // Relative path ensures compatibility with both environments
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
   },
 });
 
